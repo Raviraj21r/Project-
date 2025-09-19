@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Typing Speed Test</title>
+  <style>
+    :root{
+      --bg: #0f172a;
+      --card: #0b1220;
+      --accent: #06b6d4;
+      --muted: #94a3b8;
+      --glass: rgba(255,255,255,0.03);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071024 0%, #0b1320 100%);
+      color:#e6eef8;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+
+    .container{
+      width:100%;
+      max-width:1100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:24px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.04);
+      display:grid;
+      grid-template-columns: 1fr 340px;
+      gap:20px;
+    }
+
+    header.app-title{
+      grid-column:1/-1;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:6px;
+    }
+    header.app-title h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:0.2px;
+    }
+    header.app-title p{margin:0;color:var(--muted);font-size:13px}
+
+    .left{
+      padding:18px;
+      background:var(--glass);
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+      min-height:380px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .passage{
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      padding:18px;
+      border-radius:8px;
+      font-size:20px;
+      line-height:1.6;
+      color:#f1f7ff;
+      max-height:230px;
+      overflow:auto;
+      user-select:none;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+
+    .passage .char{
+      white-space:pre-wrap;
+    }
+    .char.correct{ color:#a7f3d0; } /* green */
+    .char.incorrect{ color:#fca5a5; background: rgba(252,165,165,0.04); border-radius:3px; }
+    .char.current{ text-decoration:underline; text-decoration-color:var(--accent); }
+
+    .input-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    textarea#typingInput{
+      flex:1;
+      min-height:90px;
+      max-height:140px;
+      resize:none;
+      padding:12px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      background: transparent;
+      color: #eaf6ff;
+      outline:none;
+      font-size:16px;
+      line-height:1.4;
+    }
+
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    button{
+      cursor:pointer;
+      border:0;
+      background:var(--accent);
+      color:#042027;
+      padding:10px 12px;
+      border-radius:8px;
+      font-weight:600;
+      box-shadow: 0 6px 18px rgba(6,182,212,0.12);
+    }
+    button.ghost{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:none;
+    }
+    button.warn{
+      background:#fb923c;color:white;
+    }
+
+    .meta{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .right{
+      padding:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+      min-height:380px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .stat{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px;
+      border-radius:8px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .stat .label{color:var(--muted);font-size:13px}
+    .stat .value{font-size:20px;font-weight:700}
+
+    .scores{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      overflow:auto;
+      max-height:200px;
+      padding-right:6px;
+    }
+    .score-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px;
+      border-radius:8px;
+      background:rgba(255,255,255,0.01);
+      border:1px solid rgba(255,255,255,0.02);
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .footer-note{ color:var(--muted); font-size:13px; margin-top:auto; }
+
+    .top-controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-bottom:6px;
+    }
+
+    .difficulty{
+      display:flex;
+      gap:6px;
+    }
+    .difficulty button{ padding:8px 10px; font-size:13px }
+
+    /* responsive */
+    @media (max-width:980px){
+      .container{ grid-template-columns: 1fr; }
+      .right{ order:2 }
+      .left{ order:1 }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="application" aria-labelledby="title">
+    <header class="app-title">
+      <div>
+        <h1 id="title">Typing Speed Test</h1>
+        <p>Practice, measure WPM, accuracy, and save best scores locally.</p>
+      </div>
+      <div style="text-align:right">
+        <p style="margin:0; color:var(--muted); font-size:13px">Made for practice • Simple & Offline</p>
+      </div>
+    </header>
+
+    <main class="left">
+      <div class="top-controls">
+        <div style="flex:1;">
+          <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+            <select id="passageSelect" aria-label="Choose passage">
+              <option value="random">Random Passage</option>
+              <option value="short">Short Sentence</option>
+              <option value="medium">Medium Paragraph</option>
+              <option value="long">Long Paragraph</option>
+            </select>
+            <div class="difficulty" role="radiogroup" aria-label="Difficulty">
+              <button class="ghost" data-diff="easy">Easy</button>
+              <button class="ghost" data-diff="medium">Medium</button>
+              <button class="ghost" data-diff="hard">Hard</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+          <button id="newBtn" class="ghost">New</button>
+          <button id="startBtn">Start</button>
+        </div>
+      </div>
+
+      <div id="passage" class="passage" aria-live="polite"></div>
+
+      <div class="input-row">
+        <textarea id="typingInput" placeholder="Click Start or focus here and start typing..." aria-label="Typing input" disabled></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div class="meta">
+          <div>⏱ <span id="timer">00:00</span></div>
+          <div>🕒 <span id="elapsed">0.0s</span></div>
+          <div>✍️ <span id="charsTyped">0</span> chars</div>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+          <button id="restartBtn" class="ghost">Restart</button>
+          <button id="submitBtn" class="warn">Finish</button>
+        </div>
+      </div>
+    </main>
+
+    <aside class="right" aria-label="Stats panel">
+      <div class="stat">
+        <div class="label">WPM</div>
+        <div class="value" id="wpm">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">Accuracy</div>
+        <div class="value" id="accuracy">100%</div>
+      </div>
+      <div class="stat">
+        <div class="label">Mistakes</div>
+        <div class="value" id="mistakes">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">CPM</div>
+        <div class="value" id="cpm">0</div>
+      </div>
+
+      <div style="margin-top:6px; font-weight:700; color:var(--muted);">High Scores</div>
+      <div class="scores" id="scoresList" aria-live="polite"></div>
+
+      <div class="footer-note">Tips: Type accurately first, then speed. Press "New" for another passage.</div>
+    </aside>
+  </div>
+
+  <script>
+    // ====== Data & Utilities ======
+    const passages = {
+      short: [
+        "Typing is a useful skill.",
+        "Practice daily to improve speed.",
+        "Accuracy matters more than speed."
+      ],
+      medium: [
+        "The quick brown fox jumps over the lazy dog. This sentence is a classic example used to test typing skills and contains every letter of the English alphabet.",
+        "Learning to type faster requires consistent practice and focused exercises. Use short drills to improve finger muscle memory and accuracy."
+      ],
+      long: [
+        "Consistent practice can rapidly improve typing speed. Begin with slow, deliberate typing to reduce mistakes and gradually increase your pace as accuracy improves. Focus on maintaining a relaxed posture and keeping your wrists elevated to avoid strain.",
+        "Typing efficiently depends on muscle memory, which is built by repeating common letter combinations and words. Regular practice sessions of fifteen to thirty minutes are more effective than infrequent, long sessions."
+      ],
+      hard: [
+        // harder sample with punctuation and numbers
+        "In 2025, developers must master accessible and semantic HTML, maintainable CSS, and modern JavaScript features. Timely practice improves productivity.",
+        "Edge-cases often reveal bugs: handle tabs, multiple spaces, and punctuation carefully; don't assume perfect input."
+      ]
+    };
+
+    // Merge into one random pool
+    const allPassages = [...passages.short, ...passages.medium, ...passages.long, ...passages.hard];
+
+    const el = id => document.getElementById(id);
+
+    // ====== State ======
+    let currentText = "";
+    let chars = []; // array of char objects {char, status: 'pending'|'correct'|'incorrect'}
+    let currentIndex = 0;
+    let started = false;
+    let startTime = null;
+    let timerInterval = null;
+    let elapsedMs = 0;
+    let typedChars = 0;
+    let mistakes = 0;
+    let difficulty = 'medium';
+
+    // ====== Elements ======
+    const passageDiv = el('passage');
+    const typingInput = el('typingInput');
+    const startBtn = el('startBtn');
+    const newBtn = el('newBtn');
+    const restartBtn = el('restartBtn');
+    const submitBtn = el('submitBtn');
+    const wpmEl = el('wpm');
+    const accuracyEl = el('accuracy');
+    const mistakesEl = el('mistakes');
+    const cpmEl = el('cpm');
+    const timerEl = el('timer');
+    const elapsedEl = el('elapsed');
+    const charsTypedEl = el('charsTyped');
+    const scoresList = el('scoresList');
+    const passageSelect = el('passageSelect');
+    const diffButtons = document.querySelectorAll('.difficulty button');
+
+    // ====== Helpers ======
+    function choosePassage(type){
+      if(type === 'random') {
+        return allPassages[Math.floor(Math.random() * allPassages.length)];
+      }
+      if(type === 'short' || type === 'medium' || type === 'long'){
+        const pool = passages[type];
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+      return allPassages[Math.floor(Math.random() * allPassages.length)];
+    }
+
+    function setDifficulty(diff){
+      difficulty = diff;
+      diffButtons.forEach(b => b.classList.toggle('ghost', b.dataset.diff !== diff));
+    }
+
+    function prepareText(text){
+      // normalize whitespace but preserve spaces/newlines
+      currentText = text.replace(/\s+$/,''); // trim trailing spaces
+      chars = currentText.split('').map(ch => ({ch, status:'pending'}));
+      currentIndex = 0;
+      started = false;
+      startTime = null;
+      elapsedMs = 0;
+      typedChars = 0;
+      mistakes = 0;
+      renderPassage();
+      updateStats();
+      typingInput.value = '';
+      typingInput.disabled = true;
+    }
+
+    function renderPassage(){
+      passageDiv.innerHTML = '';
+      chars.forEach((c, idx) => {
+        const span = document.createElement('span');
+        span.className = 'char ' + (c.status === 'pending' ? '' : c.status);
+        if(idx === currentIndex) span.classList.add('current');
+        // replace spaces with visible space
+        span.textContent = c.ch;
+        passageDiv.appendChild(span);
+      });
+      // scroll current into view
+      const spans = passageDiv.querySelectorAll('.char');
+      if(spans[currentIndex]) spans[currentIndex].scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
+    function startTest(){
+      if(started) return;
+      started = true;
+      typingInput.disabled = false;
+      typingInput.focus();
+      startTime = performance.now();
+      timerInterval = setInterval(updateTimer, 100);
+      startBtn.textContent = 'Running...';
+      startBtn.disabled = true;
+    }
+
+    function updateTimer(){
+      elapsedMs = performance.now() - startTime;
+      timerEl.textContent = formatTime(elapsedMs);
+      elapsedEl.textContent = (elapsedMs/1000).toFixed(1) + 's';
+      recalcStats();
+    }
+
+    function formatTime(ms){
+      const total = Math.floor(ms/1000);
+      const mm = Math.floor(total/60).toString().padStart(2,'0');
+      const ss = (total % 60).toString().padStart(2,'0');
+      return mm + ':' + ss;
+    }
+
+    function recalcStats(){
+      const minutes = Math.max( (elapsedMs || 0) / 60000, 0.0001);
+      const correctChars = chars.reduce((acc, c) => acc + (c.status === 'correct' ? 1 : 0), 0);
+      const totalTyped = typedChars || 0;
+      const wpm = Math.round((correctChars/5) / minutes);
+      const cpm = Math.round((correctChars) / minutes);
+      const accuracy = totalTyped === 0 ? 100 : Math.max(0, Math.round((correctChars / totalTyped) * 100));
+      wpmEl.textContent = isFinite(wpm) ? wpm : 0;
+      cpmEl.textContent = isFinite(cpm) ? cpm : 0;
+      accuracyEl.textContent = accuracy + '%';
+      mistakesEl.textContent = mistakes;
+      charsTypedEl.textContent = totalTyped;
+    }
+
+    function updateStats(){ recalcStats(); }
+
+    function stopTest(finalize = false){
+      if(timerInterval) clearInterval(timerInterval);
+      started = false;
+      startBtn.textContent = 'Start';
+      startBtn.disabled = false;
+      typingInput.disabled = true;
+      if(finalize) saveScore();
+    }
+
+    function processInput(value){
+      // We'll compare each char typed to the expected char.
+      // Allow backspace behaviour: typingInput holds all typed content, so we compare char by char.
+      const typed = value;
+      typedChars = typed.length;
+
+      // Update statuses
+      for(let i=0;i<chars.length;i++){
+        const expected = chars[i].ch;
+        const typedChar = typed[i];
+        if(typedChar == null){
+          // not yet typed
+          if(chars[i].status !== 'pending') chars[i].status = 'pending';
+        } else {
+          if(typedChar === expected){
+            if(chars[i].status !== 'correct') chars[i].status = 'correct';
+          } else {
+            if(chars[i].status !== 'incorrect') chars[i].status = 'incorrect';
+          }
+        }
+      }
+
+      // mistakes = count of incorrect typed chars
+      mistakes = chars.reduce((acc,c,i) => acc + ((c.status === 'incorrect') ? 1 : 0), 0);
+
+      // currentIndex -> position of first pending or first incorrect? we'll use typed length
+      currentIndex = typed.length;
+      if(currentIndex >= chars.length){
+        // finished (user typed >= expected length). Decide pass/fail by mistakes and stop
+        renderPassage();
+        recalcStats();
+        stopTest(true);
+        return;
+      }
+
+      renderPassage();
+      recalcStats();
+    }
+
+    function saveScore(){
+      const wpm = Number(wpmEl.textContent) || 0;
+      const acc = parseInt(accuracyEl.textContent) || 0;
+      const time = Math.round(elapsedMs/1000);
+      const score = { wpm, acc, time, date: new Date().toISOString() };
+      const key = 'typing_highscores';
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      existing.push(score);
+      existing.sort((a,b) => b.wpm - a.wpm || b.acc - a.acc); // best first
+      localStorage.setItem(key, JSON.stringify(existing.slice(0,10)));
+      loadScores();
+    }
+
+    function loadScores(){
+      const key = 'typing_highscores';
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      scoresList.innerHTML = '';
+      if(existing.length === 0){
+        scoresList.innerHTML = '<div style="color:var(--muted)">No scores yet. Finish a test to save high score.</div>';
+        return;
+      }
+      existing.forEach((s, idx) => {
+        const div = document.createElement('div');
+        div.className = 'score-item';
+        const left = document.createElement('div');
+        left.textContent = `${idx+1}. WPM ${s.wpm} • ${s.acc}%`;
+        const right = document.createElement('div');
+        right.style.color = 'var(--muted)';
+        right.style.fontSize = '12px';
+        right.textContent = secondsToHMS(s.time) + ' • ' + (new Date(s.date)).toLocaleDateString();
+        div.appendChild(left);
+        div.appendChild(right);
+        scoresList.appendChild(div);
+      });
+    }
+
+    function secondsToHMS(sec){
+      const m = Math.floor(sec/60);
+      const s = sec%60;
+      return `${m}m ${s}s`;
+    }
+
+    // ====== Event Listeners ======
+    startBtn.addEventListener('click', () => {
+      if(!started){
+        if(!startTime) {
+          // start fresh if not prepared
+          startTest();
+        } else {
+          startTest();
+        }
+      }
+    });
+
+    newBtn.addEventListener('click', () => {
+      // choose difficulty-based passage length
+      let sel = passageSelect.value;
+      let text = '';
+      if(sel === 'random') text = choosePassage('random');
+      else text = choosePassage(sel);
+      // adjust difficulty: for hard -> prefer longer/hard passages
+      if(difficulty === 'hard' && Math.random() > 0.4){
+        text = choosePassage('long') + ' ' + choosePassage('hard');
+      } else if(difficulty === 'easy' && Math.random() > 0.4){
+        text = choosePassage('short');
+      }
+      prepareText(text);
+    });
+
+    restartBtn.addEventListener('click', () => {
+      if(timerInterval) clearInterval(timerInterval);
+      if(startTime) startTime = performance.now();
+      typingInput.value = '';
+      started = false;
+      currentIndex = 0;
+      chars.forEach(c => c.status = 'pending');
+      renderPassage();
+      updateStats();
+      typingInput.disabled = true;
+      startBtn.disabled = false;
+      startBtn.textContent = 'Start';
+    });
+
+    submitBtn.addEventListener('click', () => {
+      stopTest(true);
+      renderPassage();
+    });
+
+    typingInput.addEventListener('input', (e) => {
+      if(!startTime) {
+        // start when first input typed
+        startTest();
+      }
+      processInput(e.target.value);
+    });
+
+    // handle keyboard paste or other keys
+    typingInput.addEventListener('paste', (e) => {
+      // allow paste but sanitize: limit to passage length
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text').slice(0, chars.length);
+      typingInput.value = text;
+      if(!startTime) startTest();
+      processInput(typingInput.value);
+    });
+
+    // difficulty buttons
+    diffButtons.forEach(b => {
+      b.addEventListener('click', () => setDifficulty(b.dataset.diff));
+    });
+
+    // pre-select initial passage
+    window.addEventListener('load', () => {
+      setDifficulty('medium');
+      // generate initial passage
+      const initial = choosePassage('medium');
+      prepareText(initial);
+      loadScores();
+    });
+
+    // accessibility: allow focus into textarea with Enter when not started
+    typingInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Tab') e.preventDefault();
+      // If user pressed Esc -> reset
+      if(e.key === 'Escape') {
+        typingInput.value = '';
+        restartBtn.click();
+      }
+    });
+
+    // Expose some functions to console for debugging (optional)
+    window.typingTest = {
+      prepareText,
+      startTest,
+      stopTest,
+      recalcStats,
+      loadScores
+    };
+  </script>
+</body>
+</html>
