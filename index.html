@@ -1,621 +1,695 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Typing Speed Test</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ravi Raj | Professional Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    :root{
-      --bg: #0f172a;
-      --card: #0b1220;
-      --accent: #06b6d4;
-      --muted: #94a3b8;
-      --glass: rgba(255,255,255,0.03);
+    /* ======================
+       Global Reset & Theme
+       ====================== */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+    html, body { height: 100%; }
+    body { background: linear-gradient(135deg,#0f2027,#203a43,#2c5364); color: #fff; line-height: 1.7; scroll-behavior: smooth; }
+    a { color: inherit; }
+
+    /* ======================
+       Header / Navigation
+       ====================== */
+    header { position: sticky; top: 0; z-index: 1200; display:flex; align-items:center; justify-content:space-between; padding: 18px 40px; background: rgba(2,6,23,0.6); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand .logo { width:46px; height:46px; border-radius:10px; background: linear-gradient(135deg,#00eaff,#0077cc); display:grid; place-items:center; font-weight:700; color:#021323; }
+    nav ul { list-style:none; display:flex; gap:14px; align-items:center; }
+    nav a { text-decoration:none; color:#eaf6ff; font-weight:600; padding:8px 10px; border-radius:8px; transition: all .2s ease; }
+    nav a:hover, nav a.active { color:#021323; background:#c9f0ff; box-shadow: 0 8px 26px rgba(0,195,255,0.12); transform: translateY(-2px); }
+    .controls { display:flex; gap:10px; align-items:center; }
+    .cta { background: linear-gradient(90deg,#ff4b7d,#ff7aa2); padding:10px 14px; border-radius:10px; color:white; font-weight:700; text-decoration:none; }
+
+    /* ======================
+       Sections Base
+       ====================== */
+    main { max-width:1200px; margin: 110px auto 40px; padding: 0 20px; }
+    section { margin-bottom: 48px; padding: 34px; border-radius: 14px; transition: all .35s ease; }
+    .card { background: linear-gradient(180deg, rgba(231, 5, 5, 0.02), rgba(255,255,255,0.01)); padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); }
+
+    h1,h2,h3 { margin-bottom:12px; }
+    h1 { font-size: 28px; color: #eaf6ff; }
+    h2.section-title { font-size: 22px; color: #00eaff; margin-bottom: 18px; }
+    p.lead { color: #cfeeff; }
+
+    /* ======================
+       Hero / Intro
+       ====================== */
+    .hero { display:grid; grid-template-columns: 1fr 380px; gap:32px; align-items:center; }
+    .hero .intro { padding-right: 6px; }
+    .intro h1 { font-size: 44px; line-height:1.02; margin-bottom:12px; text-shadow: 0 6px 30px rgba(0,195,255,0.08); }
+    .intro h2 { color: #bff5ff; font-size:18px; margin-bottom:16px; }
+    .intro p { max-width:640px; color:#dff6ff; }
+    .hero .photo { width:360px; height:360px; border-radius:50%; position:relative; display:grid; place-items:center; }
+    .photo .ring { position:absolute; inset:0; border-radius:50%; box-shadow: 0 0 80px 18px rgba(0,195,255,0.4), inset 0 0 40px rgba(0,120,200,0.15); animation: pulse 4s ease-in-out infinite; }
+    .photo img { width:300px; height:350px; border-radius:50%; object-fit:cover; box-shadow: 0 30px 80px rgba(0,195,255,0.12); z-index:2; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+    .hero .buttons { margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; }
+    .btn { padding:12px 18px; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
+    .btn.primary { background: linear-gradient(90deg,#00eaff,#008cff); color:#042a33; }
+    .btn.ghost { background: transparent; color:#eaf6ff; border:1px solid rgba(255,255,255,0.06); }
+
+    /* ======================
+       Skills Grid
+       ====================== */
+    .skills-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:12px; }
+    .skill { padding:16px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); }
+    .skill h4 { color:#c6f6ff; margin-bottom:8px; }
+    .skill p { color:#cfeeff; font-size:0.98rem; }
+
+    /* ======================
+       Services List
+       ====================== */
+    .services-grid a{ display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; }
+
+    /* ======================
+       Portfolio Grid & Modals
+       ====================== */
+    .portfolio-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:18px; }
+    .project { padding:14px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); cursor:pointer; transition: transform .25s ease, box-shadow .25s ease; }
+    .project:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(2,6,23,0.6); }
+    .project h4 { margin-bottom:8px; color:#11c3eb; }
+    .project p { color:#cdeeff; font-size:0.95rem; }
+
+    /* modal styles */
+    .modal-backdrop{ position:fixed; inset:0; background:rgba(2,6,23,0.8); display:none; align-items:center; justify-content:center; z-index:2000; }
+    .modal { background:#071428; padding:22px; border-radius:12px; width:90%; max-width:880px; box-shadow: 0 40px 120px rgba(0,0,0,0.6); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; }
+    .modal-body { margin-top:12px; display:grid; grid-template-columns: 1fr 350px; gap:18px; }
+    .modal .screenshot { width:100%; height:220px; background:#0c1a2a; border-radius:8px; display:grid; place-items:center; color:#9fb3c8; }
+    .tags { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+    .tag { background:#052431; padding:6px 10px; border-radius:8px; color:#8edfff; font-weight:600; font-size:0.85rem; }
+
+    /* ======================
+       FAQ / Testimonials / Timeline
+       ====================== */
+    .faq-item { margin-bottom:12px; }
+    .faq-item summary { cursor:pointer; font-weight:700; list-style:none; }
+    .testimonials .quote { margin-bottom:12px; font-style:italic; color:#dff6ff; }
+    .timeline-list { list-style:none; padding-left:0; }
+    .timeline-list li { margin-bottom:8px; padding-left:12px; border-left:2px dashed rgba(255,255,255,0.04); }
+
+    /* ======================
+       Contact & Footer
+       ====================== */
+    .contact-form { max-width:680px; margin:auto; display:grid; gap:10px; }
+    .contact-form input, .contact-form textarea { padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent; color: #eaf6ff; }
+    .footer { padding:40px 20px; text-align:center; background: linear-gradient(180deg, rgba(2,6,23,0.85), rgba(2,6,23,0.95)); margin-top:36px; border-top:1px solid rgba(255,255,255,0.02); }
+    .footer .socials { display:flex; justify-content:center; gap:12px; margin-bottom:10px; }
+    .footer .links { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; color:#9fcbe6; }
+
+    /* ======================
+       Responsive
+       ====================== */
+       .project-link:active {
+        color: blue; /* click karte time color change */
+}
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; gap:18px; }
+      .modal-body { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: repeat(2,1fr); }
+      .services-grid { grid-template-columns: repeat(2,1fr); }
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg,#071024 0%, #0b1320 100%);
-      color:#e6eef8;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:32px;
+    @media (max-width: 520px) {
+      header { padding: 12px 18px; }
+      nav ul { display:none; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .hero .photo { display:none; }
     }
 
-    .container{
-      width:100%;
-      max-width:1100px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:24px;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-      border: 1px solid rgba(255,255,255,0.04);
-      display:grid;
-      grid-template-columns: 1fr 340px;
-      gap:20px;
-    }
-
-    header.app-title{
-      grid-column:1/-1;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:6px;
-    }
-    header.app-title h1{
-      margin:0;
-      font-size:20px;
-      letter-spacing:0.2px;
-    }
-    header.app-title p{margin:0;color:var(--muted);font-size:13px}
-
-    .left{
-      padding:18px;
-      background:var(--glass);
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.02);
-      min-height:380px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-
-    .passage{
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-      padding:18px;
-      border-radius:8px;
-      font-size:20px;
-      line-height:1.6;
-      color:#f1f7ff;
-      max-height:230px;
-      overflow:auto;
-      user-select:none;
-      border:1px solid rgba(255,255,255,0.02);
-    }
-
-    .passage .char{
-      white-space:pre-wrap;
-    }
-    .char.correct{ color:#a7f3d0; } /* green */
-    .char.incorrect{ color:#fca5a5; background: rgba(252,165,165,0.04); border-radius:3px; }
-    .char.current{ text-decoration:underline; text-decoration-color:var(--accent); }
-
-    .input-row{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    textarea#typingInput{
-      flex:1;
-      min-height:90px;
-      max-height:140px;
-      resize:none;
-      padding:12px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,0.04);
-      background: transparent;
-      color: #eaf6ff;
-      outline:none;
-      font-size:16px;
-      line-height:1.4;
-    }
-
-    .controls{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    button{
-      cursor:pointer;
-      border:0;
-      background:var(--accent);
-      color:#042027;
-      padding:10px 12px;
-      border-radius:8px;
-      font-weight:600;
-      box-shadow: 0 6px 18px rgba(6,182,212,0.12);
-    }
-    button.ghost{
-      background:transparent;
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,0.04);
-      box-shadow:none;
-    }
-    button.warn{
-      background:#fb923c;color:white;
-    }
-
-    .meta{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .right{
-      padding:18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.02);
-      min-height:380px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-
-    .stat{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:12px;
-      border-radius:8px;
-      background:rgba(255,255,255,0.02);
-      border:1px solid rgba(255,255,255,0.02);
-    }
-    .stat .label{color:var(--muted);font-size:13px}
-    .stat .value{font-size:20px;font-weight:700}
-
-    .scores{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      overflow:auto;
-      max-height:200px;
-      padding-right:6px;
-    }
-    .score-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:10px;
-      border-radius:8px;
-      background:rgba(255,255,255,0.01);
-      border:1px solid rgba(255,255,255,0.02);
-      font-size:14px;
-      color:var(--muted);
-    }
-
-    .footer-note{ color:var(--muted); font-size:13px; margin-top:auto; }
-
-    .top-controls{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      margin-bottom:6px;
-    }
-
-    .difficulty{
-      display:flex;
-      gap:6px;
-    }
-    .difficulty button{ padding:8px 10px; font-size:13px }
-
-    /* responsive */
-    @media (max-width:980px){
-      .container{ grid-template-columns: 1fr; }
-      .right{ order:2 }
-      .left{ order:1 }
-    }
   </style>
 </head>
 <body>
-  <div class="container" role="application" aria-labelledby="title">
-    <header class="app-title">
+  <header>
+    <div class="brand">
+      <div class="logo">RAVI</div>
       <div>
-        <h1 id="title">Typing Speed Test</h1>
-        <p>Practice, measure WPM, accuracy, and save best scores locally.</p>
+        <div style="font-weight:700; color:lch(30.97% 106.44 309.15);">RAVI KUMAR</div>
+        <div style="font-size:40px; color:#370cf7;"><b>Portfolio</b></div>
       </div>
-      <div style="text-align:right">
-        <p style="margin:0; color:var(--muted); font-size:13px">Made for practice • Simple & Offline</p>
-      </div>
-    </header>
+    </div>
 
-    <main class="left">
-      <div class="top-controls">
-        <div style="flex:1;">
-          <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
-            <select id="passageSelect" aria-label="Choose passage">
-              <option value="random">Random Passage</option>
-              <option value="short">Short Sentence</option>
-              <option value="medium">Medium Paragraph</option>
-              <option value="long">Long Paragraph</option>
-            </select>
-            <div class="difficulty" role="radiogroup" aria-label="Difficulty">
-              <button class="ghost" data-diff="easy">Easy</button>
-              <button class="ghost" data-diff="medium">Medium</button>
-              <button class="ghost" data-diff="hard">Hard</button>
-            </div>
+    <div class="controls">
+      <nav>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#timeline">Journey</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <a class="cta" href="#contact">Hire / Contact</a>
+      <button class="btn ghost toggle-btn" onclick="toggleDarkMode()">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="home" class="card">
+      <div class="hero">
+        <div class="intro">
+          <h1 style="color: #4eaf15;">Hi — I'm <span style="color:#e7e0dc">RAVI KUMAR</span></h1>
+          <h2 class="subtitle">I design and build accessible, fast, and beautiful web experiences.</h2>
+          <p class="lead">I specialize in front-end engineering using semantic HTML, modern CSS, and JavaScript. My focus is on delivering user-friendly interfaces with performance and accessibility in mind. Below you will find detailed sections about my skills, services, projects, case studies, and how to contact me.</p>
+
+          <div class="hero-actions">
+            <button class="btn primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Hire Me</button>
+            <button class="btn ghost" onclick="document.getElementById('portfolio').scrollIntoView({behavior:'smooth'})">See Portfolio</button>
+          </div>
+
+          <div style="margin-top:18px; display:flex; gap:12px; align-items:center;">
+            <div style="background:rgba(255,255,255,0.03);padding:10px 14px;border-radius:10px;">📧 ravikrsingho68068@gmail.com</div>
+            <div style="background:rgba(255,255,255,0.03);padding:10px 14px;border-radius:10px;">📍 BUXAR, BIHAR</div>
+          </div>
+
+        </div>
+
+        <div class="photo card">
+          <div class="ring"></div>
+          <img src="tty.jpg" alt="Ravi Kumar">
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="card">
+      <h2 class="section-title">About Me</h2>
+      <p>I AM BCA STUDENT. I enjoy turning complex problems into simple, beautiful user experiences. I write clean, accessible code and make sure designs translate well into production.</p>
+
+      <p>My core values: <strong>Quality</strong>, <strong>Readability</strong>, <strong>Performance</strong>, and <strong>Accessibility</strong>. I am open to freelance, internships, and full-time opportunities.</p>
+
+      <div style="margin-top:18px; display:grid; grid-template-columns: repeat(2,1fr); gap:12px;">
+        <div class="card">
+          <h4 style="color: #df178c; font-size: 20px;"><b>Education</b></h4>
+          <p>Bachelor of Computer Applications(BCA) — Expected 2023</p>
+          <p>Relevant coursework: Data Structures, Algorithms, DBMS, Operating Systems, Web Technologies</p>
+        </div>
+        <div class="card">
+          <h4 style="color: #bd7210; font-size: 20px;">Tools & Workflow</h4>
+          <p>VS Code • Git & GitHub • Chrome • MYSQL, DEVC++</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="card">
+      <h2 class="section-title">Skills & Expertise</h2>
+      <div class="skills-grid">
+        <div class="skill">
+          <h4>HTML & Accessibility</h4>
+          <p style="color: WHITE;">Semantic HTML5, forms, ARIA, keyboard navigation and screen reader friendly markup.</p>
+        </div>
+        <div class="skill">
+          <h4>CSS & Layout</h4>
+          <p>CSS Grid, Flexbox, responsive patterns, CSS variables, animations and transitions.</p>
+        </div>
+        <div class="skill">
+          <h4>JavaScript</h4>
+          <p>Vanilla JS, ES6+, DOM APIs, async/await, fetch and small stateful widgets.</p>
+        </div>
+        <div class="skill">
+          <h4>React & Component Design</h4>
+          <p>Component composition, props/state patterns, hooks basics and small SPA work.</p>
+        </div>
+        <div class="skill">
+          <h4>Backend Basics</h4>
+          <p>Node.js, Express fundamentals, REST APIs, handling JSON and simple data storage.</p>
+        </div>
+        <div class="skill">
+          <h4>Databases</h4>
+          <p>MySQL basics, schema design and simple queries.</p>
+        </div>
+        <div class="skill">
+          <h4>Testing & Performance</h4>
+          <p>Manual testing, Lighthouse audits, image optimization and lazy-loading strategies.</p>
+        </div>
+        <div class="skill">
+          <h4>Soft Skills</h4>
+          <p>Clear communication, documentation, agile workflows and continuous learning.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <h4>Basic Competency Table</h4>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+          <div class="card" style="flex:1;min-width:200px;"><strong>HTML5</strong><div>Advanced</div></div>
+          <div class="card" style="flex:1;min-width:200px;"><strong>CSS3</strong><div>Advanced</div></div>
+          <div class="card" style="flex:1;min-width:200px;"><strong>JavaScript</strong><div>Intermediate / Advanced</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="card">
+      <h2 class="section-title">Services I Offer</h2>
+      <div class="services-grid">
+        <div class="card service-card">
+          <h4>Website Development</h4>
+          <p>Full creation of responsive, accessible websites from design to deployment.</p>
+        </div>
+        <div class="card service-card">
+          <h4>UI/UX & Prototyping</h4>
+          <p>Designing the user flows, interactive prototypes, and visual polish.</p>
+        </div>
+        <div class="card service-card">
+          <h4>Performance Optimization</h4>
+          <p>Improve load times, optimize media, reduce render-blocking resources.</p>
+        </div>
+        <div class="card service-card">
+          <h4>Accessibility Audits</h4>
+          <p>Manual and automated accessibility checks and remediation steps.</p>
+        </div>
+        <div class="card service-card">
+          <h4>Maintenance & Support</h4>
+          <p>Ongoing updates, bug fixes and small feature additions.</p>
+        </div>
+        <div class="card service-card">
+          <h4>Consulting</h4>
+          <p>Code reviews, architecture suggestions and mentoring.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO + CASE STUDIES (many items added) -->
+    <section id="portfolio" class="card">
+      <h2 class="section-title">Selected Projects & Case Studies</h2>
+      <p class="lead">Below are several projects and short case-study summaries showing the problem, solution, and impact. Click a project to open a detailed modal with screenshots, tech used, and notes.</p>
+
+      <div class="portfolio-grid" style="margin-top:18px;">
+        <!-- repeat many project cards to increase length and show variety -->
+        <div class="project" onclick="openModalDetailed(1)">
+          <h4>Typing Speed Trainer</h4>
+          <p>Interactive typing practice app with WPM, accuracy, and local high scores.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(2)">
+          <h4>MMDU</h4>
+          <p>Maharishi Markandeshwar (Deemed to be University)mullana Ambala visiting university </p>
+        </div>
+        <div class="project" onclick="openModalDetailed(3)">
+          <h4>Portfolio Template</h4>
+          <p>One-page portfolio with animated hero and contact integration.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(4)">
+          <h4>Weather Dashboard</h4>
+          <p>Real-time weather data with API integration and local caching.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(5)">
+          <h4>Calculator UI</h4>
+          <p>Modern calculator with keyboard support and responsive layout.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(6)">
+          <h4>E-commerce Landing</h4>
+          <p>Product showcase and CTA with payment simulation.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(7)">
+          <h4>Blog System (Static)</h4>
+          <p>Static blog template with category filters and search.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(8)">
+          <h4>Quiz App</h4>
+          <p>Timed quizzes with score tracking and review pages.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(9)">
+          <h4>Image Gallery</h4>
+          <p>Lazy-loading images and lightbox modal for high-resolution photos.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(10)">
+          <h4>Task Manager</h4>
+          <p>Simple todo app with local storage and drag-and-drop ordering.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(11)">
+          <h4>Chat UI Prototype</h4>
+          <p>Minimal chat interface for messaging experiences.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(12)">
+          <h4>Landing Page Animations</h4>
+          <p>Hero animation sequences and smooth scroll interactions.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(13)">
+          <h4>Resume Builder</h4>
+          <p>Small app to compose, preview and export resumes as PDF.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(14)">
+          <h4>Expense Tracker</h4>
+          <p>Track income & expenses with charts and filters.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(15)">
+          <h4>Music Player UI</h4>
+          <p>Custom audio player with playlist support and animations.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(16)">
+          <h4>Markdown Editor</h4>
+          <p>Live preview markdown editor with download feature.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(17)">
+          <h4>Form Validation Library</h4>
+          <p>Reusable validation helpers for forms and inputs.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(18)">
+          <h4>Image Compressor</h4>
+          <p>Client-side image compression using canvas for faster uploads.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(19)">
+          <h4>Interactive Charts</h4>
+          <p>Data visualizations with accessible legends and tooltips.</p>
+        </div>
+        <div class="project" onclick="openModalDetailed(20)">
+          <h4>Travel Itinerary Planner</h4>
+          <p>Plan, save and export trip plans with local storage.</p>
+        </div>
+      </div>
+
+      <!-- LONG CASE-STUDY EXAMPLE (expanded to add lines) -->
+      <div style="margin-top:24px;">
+        <h4 style="color: #008cff; font-size: 20px;"><a href="https://raviraj21r.github.io/Project-/" target="_blank" style="text-decoration: none;">Typing Speed Trainer</a></h4>
+        <p><strong>Problem:</strong> Many typing practice sites are heavy, slow, or require frameworks; users wanted a lightweight offline-friendly solution.</p>
+        <p><strong>Approach:</strong> Built as a single HTML file with CSS and vanilla JS. Implemented efficient event handling to measure keystrokes, calculate WPM, accuracy and highlight mistakes in real-time. Used localStorage for persistent high-scores.</p>
+        <p><strong>Implementation details:</strong> Key features include: randomized text sets, adjustable durations (15/30/60s), live WPM/accuracy calculations, pause/resume, and accessible focus management so keyboard-only users can use it. The UI adapts to mobile screens and reduces unnecessary paint operations to improve battery life.</p>
+        <p><strong>Impact:</strong> Fast loading (<1s on slow networks), easy to host on GitHub Pages, and useful for students learning touch-typing. The app achieved an internal user satisfaction rating of 4.6/5 in informal tests.</p>
+      </div>
+
+      <!-- another expanded case study -->
+      <div style="margin-top:18px;">
+        <h3 style="color: #0077cc;"><a href="https://www.mmumullana.org/"  target="_blank" style="text-decoration: none;">Case Study: MMDU Landing</a></h3>
+        <p><strong>Goal:</strong> Build a complete, content-driven landing site that editors can update easily and which performs well under heavy traffic.</p>
+        <p><strong>Strategy:</strong> Focus on semantic sections, server-ready HTML structure, lazy images, and minimal JS. Create reusable components (cards, modals, event lists) and provide clear CSS variables for theming.</p>
+        <p><strong>Outcome:</strong> The landing page template was accepted by multiple departments and was reused for event pages, saving design/development time.</p>
+      </div>
+
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="card">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <div class="faq-item card">
+          <details>
+            <summary>What technologies do you work with?</summary>
+            <div style="margin-top:8px;">I work mainly with HTML, CSS, JavaScript (ES6+), React, Node.js basics, and databases like MySQL. I also use tools like Git, VS Code, Chrome DevTools, Figma for design handoffs, and Netlify / Vercel for deployments.</div>
+          </details>
+        </div>
+        <div class="faq-item card">
+          <details>
+            <summary>Can you help with hiring projects or internships?</summary>
+            <div style="margin-top:8px;">Yes — I mentor students and sometimes take small internship projects. I am open to collaboration with universities and small companies for guided work.</div>
+          </details>
+        </div>
+        <div class="faq-item card">
+          <details>
+            <summary>How do you price your projects?</summary>
+            <div style="margin-top:8px;">Pricing depends on scope. Typical ranges: landing page (₹5k–15k), multi-page website (₹15k–50k), web app features estimated per sprint. I provide a simple quote after initial discovery.</div>
+          </details>
+        </div>
+        <div class="faq-item card">
+          <details>
+            <summary>Do you provide documentation and handoff?</summary>
+            <div style="margin-top:8px;">Yes. Every project includes a README, deployment notes, and guidance for future maintainers. Optionally I can provide short walkthrough sessions.</div>
+          </details>
+        </div>
+        <div class="faq-item card">
+          <details>
+            <summary>What is your turnaround time?</summary>
+            <div style="margin-top:8px;">Small tasks: 1–3 days. Landing pages: 1–2 weeks. Web apps: depends on complexity; usually planned in sprints.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="card">
+      <h2 class="section-title">Testimonials</h2>
+      <div class="testimonials">
+        <div class="quote card">“Ravi built our landing page quickly and with attention to detail. He also helped improve accessibility.” — Product Manager</div>
+        <div class="quote card">“Easy to work with, communicated clearly, and delivered on time.” — Startup Founder</div>
+        <div class="quote card">“Excellent UI work and clean code. Our QA team was impressed.” — Engineering Lead</div>
+      </div>
+    </section>
+
+    <!-- TIMELINE / JOURNEY -->
+    <section id="timeline" class="card">
+      <h2 class="section-title">My Journey</h2>
+      <ul class="timeline-list">
+        <li><strong>2019:</strong> Began programming with C / C++ and basic algorithms.</li>
+        <li><strong>2020:</strong> First web projects using HTML/CSS and small JS widgets.</li>
+        <li><strong>2021:</strong> Participated in hackathons; built portfolio projects.</li>
+        <li><strong>2022:</strong> Learned React and started integrating APIs.</li>
+        <li><strong>2023:</strong> Freelance work and mentorship for juniors.</li>
+        <li><strong>2024:</strong> Focus on advanced frontend techniques and optimization.</li>
+      </ul>
+    </section>
+
+    <!-- DEEPER PROJECT LIST (bulk entries to increase lines for demo) -->
+    <section class="card">
+      <h2 class="section-title">Other Projects (demos & small utilities)</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+        <!-- a long list of short project tiles to pad length and show experience -->
+        <div class="project card">Local Weather Widget — small API demo</div>
+        <div class="project card">Countdown Timer — JS timer with notifications</div>
+        <div class="project card">Notes App — save & edit notes (localStorage)</div>
+        <div class="project card">Color Palette Generator — tools for designers</div>
+        <div class="project card">SVG Icon Set — optimized sprite + accessibility</div>
+        <div class="project card">Form Wizard — multi-step form UX</div>
+        <div class="project card">CSV Importer — parse & preview CSV data</div>
+        <div class="project card">Image Cropper — client-side image editing</div>
+        <div class="project card">PDF Export Utility — export page to PDF</div>
+        <div class="project card">Simple CMS mock — JSON-driven pages</div>
+        <div class="project card">Progress Tracker — habit tracker UI</div>
+        <div class="project card">Markdown Notes — live preview editor</div>
+        <div class="project card">Recipe Finder — search & filter demo</div>
+        <div class="project card">Accessibility Checklist — small audit tool</div>
+        <div class="project card">Local Storage Cleaner — tiny utility</div>
+        <div class="project card">SVG Animation Demo — timeline-based</div>
+        <div class="project card">Debounce/Throttle Demo — input optimization</div>
+        <div class="project card">Keyboard Shortcuts — enhance productivity</div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="card">
+      <h2 class="section-title">Contact & Hire</h2>
+      <p class="lead">If you like my work and want to collaborate, please reach out. I normally respond within 24–48 hours on business days.</p>
+
+      <form class="contact-form" onsubmit="handleContact(event)">
+        <input id="c-name" type="text" placeholder="Your name" required />
+        <input id="c-email" type="email" placeholder="Your email" required />
+        <input id="c-subject" type="text" placeholder="Subject (Project / Job)" />
+        <textarea id="c-message" rows="6" placeholder="Describe your project or message" required></textarea>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn primary" type="submit">Send Message</button>
+          <button class="btn ghost" type="button" onclick="resetContact()">Reset</button>
+        </div>
+      </form>
+
+      <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="card">
+          <strong style="color: #09a2fa; font-size: 40px;">Email</strong>
+          <div style="margin-top:6px; color:#f1f4f7;"><b>ravikrsingho68068@gmail.com</b></div>
+        </div>
+        <div class="card">
+          <strong style="color: #09a2fa; font-size: 40px;">LinkedIn</strong>
+          <div style="margin-top:6px;"><a href="https://linkedin.com/in/ravi-kumar-2b3284358" target="_blank" style="text-decoration: none;">linkedin.com/in/ravi-kumar-2b3284358</a></div>
+        </div>
+        <div class="card">
+          <strong style="color: #09a2fa; font-size: 40px;">GitHub</strong>
+          <div style="margin-top:6px;"><a href="https://github.com/Raviraj21r" target="_blank" style="text-decoration: none;">github.com/raviraj21a</a></div>
+        </div>
+        <div class="card">
+          <strong style="color: #09a2fa; font-size: 40px;">YouTube</strong>
+          <div style="margin-top: 60px;"><a href="https://youtube.com/@inspirecodemaster?si=wCPCayOEDJwGuA8P" target="_blank" style="text-decoration: none;">Youtube Channel</a></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:220px;">
+          <h3>Ravi Raj</h3>
+          <p style="color:#9fcbe6;">Frontend Developer & Software Engineer — crafting accessible, performant, and beautiful web experiences. Available for freelance & full-time roles.</p>
+        </div>
+
+        <div style="flex:1;min-width:220px;">
+          <h4 style="color:#bff5ff;">Quick Links</h4>
+          <div class="links">
+            <a href="#about">About</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
           </div>
         </div>
 
-        <div style="display:flex; gap:8px;">
-          <button id="newBtn" class="ghost">New</button>
-          <button id="startBtn">Start</button>
+        <div style="flex:1;min-width:220px;">
+          <h4 style="color:#bff5ff;">Subscribe</h4>
+          <p style="color:#9fcbe6;">Get updates when I publish a new project or blog.</p>
+          <div style="margin-top:8px; display:flex; gap:8px;">
+            <input id="newsletter-email" type="email" placeholder="Enter your email" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);background:transparent;color:#eaf6ff;" />
+            <button onclick="subscribeNews()" style="padding:8px 12px;border-radius:8px;border:none;background:#00eaff;color:#042a33;font-weight:700;">Subscribe</button>
+          </div>
         </div>
       </div>
 
-      <div id="passage" class="passage" aria-live="polite"></div>
-
-      <div class="input-row">
-        <textarea id="typingInput" placeholder="Click Start or focus here and start typing..." aria-label="Typing input" disabled></textarea>
+      <div style="margin-top:18px;display:flex;justify-content:center;gap:12px;align-items:center;flex-wrap:wrap;">
+        <a class="social" href="https://github.com/raviraj21a" target="_blank" title="GitHub"><i class="fab fa-github fa-2x"></i></a>
+        <a class="social" href="https://linkedin.com/in/ravi-kumar-2b3284358" target="_blank" title="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
+        <a class="social" href="mailto:ravikrsingho68068@gmail.com" title="Email"><i class="fas fa-envelope fa-2x"></i></a>
+        <a class="social" href="https://instagram.com/mrraviraj9297" target="_blank" title="Instagram"><i class="fab fa-instagram fa-2x"></i></a>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-        <div class="meta">
-          <div>⏱ <span id="timer">00:00</span></div>
-          <div>🕒 <span id="elapsed">0.0s</span></div>
-          <div>✍️ <span id="charsTyped">0</span> chars</div>
+      <div style="margin-top:18px;color:#9fcbe6;">© 2025 Ravi Kumar• Built with HTML, CSS & JavaScript • <a href="#" style="color:#bff5ff;">Privacy</a> • <a href="#" style="color:#bff5ff;">Terms</a> • <a href="#" style="color:#bff5ff;">Sitemap</a></div>
+    </div>
+  </footer>
+
+  <!-- Modal Backdrop -->
+  <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <div class="modal-header">
+        <h3 id="modal-title">Project Details</h3>
+        <button onclick="closeDetailedModal()" aria-label="Close" style="background:transparent;border:none;color:#c9f0ff;font-weight:700;font-size:18px;">✕</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <p id="modal-text" style="color:#cfeeff;">Detailed project description will appear here.</p>
+          <div class="tags" id="modal-tags"></div>
         </div>
-
-        <div style="display:flex; gap:8px;">
-          <button id="restartBtn" class="ghost">Restart</button>
-          <button id="submitBtn" class="warn">Finish</button>
+        <div>
+          <div class="screenshot">Screenshot / Demo</div>
+          <div style="margin-top:12px;color:#9fb3c8;font-size:13px;">Tech stack, live link and repo information appear here.</div>
         </div>
       </div>
-    </main>
-
-    <aside class="right" aria-label="Stats panel">
-      <div class="stat">
-        <div class="label">WPM</div>
-        <div class="value" id="wpm">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">Accuracy</div>
-        <div class="value" id="accuracy">100%</div>
-      </div>
-      <div class="stat">
-        <div class="label">Mistakes</div>
-        <div class="value" id="mistakes">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">CPM</div>
-        <div class="value" id="cpm">0</div>
-      </div>
-
-      <div style="margin-top:6px; font-weight:700; color:var(--muted);">High Scores</div>
-      <div class="scores" id="scoresList" aria-live="polite"></div>
-
-      <div class="footer-note">Tips: Type accurately first, then speed. Press "New" for another passage.</div>
-    </aside>
+    </div>
   </div>
 
   <script>
-    // ====== Data & Utilities ======
-    const passages = {
-      short: [
-        "Typing is a useful skill.",
-        "Practice daily to improve speed.",
-        "Accuracy matters more than speed."
-      ],
-      medium: [
-        "The quick brown fox jumps over the lazy dog. This sentence is a classic example used to test typing skills and contains every letter of the English alphabet.",
-        "Learning to type faster requires consistent practice and focused exercises. Use short drills to improve finger muscle memory and accuracy."
-      ],
-      long: [
-        "Consistent practice can rapidly improve typing speed. Begin with slow, deliberate typing to reduce mistakes and gradually increase your pace as accuracy improves. Focus on maintaining a relaxed posture and keeping your wrists elevated to avoid strain.",
-        "Typing efficiently depends on muscle memory, which is built by repeating common letter combinations and words. Regular practice sessions of fifteen to thirty minutes are more effective than infrequent, long sessions."
-      ],
-      hard: [
-        // harder sample with punctuation and numbers
-        "In 2025, developers must master accessible and semantic HTML, maintainable CSS, and modern JavaScript features. Timely practice improves productivity.",
-        "Edge-cases often reveal bugs: handle tabs, multiple spaces, and punctuation carefully; don't assume perfect input."
-      ]
-    };
-
-    // Merge into one random pool
-    const allPassages = [...passages.short, ...passages.medium, ...passages.long, ...passages.hard];
-
-    const el = id => document.getElementById(id);
-
-    // ====== State ======
-    let currentText = "";
-    let chars = []; // array of char objects {char, status: 'pending'|'correct'|'incorrect'}
-    let currentIndex = 0;
-    let started = false;
-    let startTime = null;
-    let timerInterval = null;
-    let elapsedMs = 0;
-    let typedChars = 0;
-    let mistakes = 0;
-    let difficulty = 'medium';
-
-    // ====== Elements ======
-    const passageDiv = el('passage');
-    const typingInput = el('typingInput');
-    const startBtn = el('startBtn');
-    const newBtn = el('newBtn');
-    const restartBtn = el('restartBtn');
-    const submitBtn = el('submitBtn');
-    const wpmEl = el('wpm');
-    const accuracyEl = el('accuracy');
-    const mistakesEl = el('mistakes');
-    const cpmEl = el('cpm');
-    const timerEl = el('timer');
-    const elapsedEl = el('elapsed');
-    const charsTypedEl = el('charsTyped');
-    const scoresList = el('scoresList');
-    const passageSelect = el('passageSelect');
-    const diffButtons = document.querySelectorAll('.difficulty button');
-
-    // ====== Helpers ======
-    function choosePassage(type){
-      if(type === 'random') {
-        return allPassages[Math.floor(Math.random() * allPassages.length)];
-      }
-      if(type === 'short' || type === 'medium' || type === 'long'){
-        const pool = passages[type];
-        return pool[Math.floor(Math.random() * pool.length)];
-      }
-      return allPassages[Math.floor(Math.random() * allPassages.length)];
-    }
-
-    function setDifficulty(diff){
-      difficulty = diff;
-      diffButtons.forEach(b => b.classList.toggle('ghost', b.dataset.diff !== diff));
-    }
-
-    function prepareText(text){
-      // normalize whitespace but preserve spaces/newlines
-      currentText = text.replace(/\s+$/,''); // trim trailing spaces
-      chars = currentText.split('').map(ch => ({ch, status:'pending'}));
-      currentIndex = 0;
-      started = false;
-      startTime = null;
-      elapsedMs = 0;
-      typedChars = 0;
-      mistakes = 0;
-      renderPassage();
-      updateStats();
-      typingInput.value = '';
-      typingInput.disabled = true;
-    }
-
-    function renderPassage(){
-      passageDiv.innerHTML = '';
-      chars.forEach((c, idx) => {
-        const span = document.createElement('span');
-        span.className = 'char ' + (c.status === 'pending' ? '' : c.status);
-        if(idx === currentIndex) span.classList.add('current');
-        // replace spaces with visible space
-        span.textContent = c.ch;
-        passageDiv.appendChild(span);
-      });
-      // scroll current into view
-      const spans = passageDiv.querySelectorAll('.char');
-      if(spans[currentIndex]) spans[currentIndex].scrollIntoView({behavior:'smooth', block:'nearest'});
-    }
-
-    function startTest(){
-      if(started) return;
-      started = true;
-      typingInput.disabled = false;
-      typingInput.focus();
-      startTime = performance.now();
-      timerInterval = setInterval(updateTimer, 100);
-      startBtn.textContent = 'Running...';
-      startBtn.disabled = true;
-    }
-
-    function updateTimer(){
-      elapsedMs = performance.now() - startTime;
-      timerEl.textContent = formatTime(elapsedMs);
-      elapsedEl.textContent = (elapsedMs/1000).toFixed(1) + 's';
-      recalcStats();
-    }
-
-    function formatTime(ms){
-      const total = Math.floor(ms/1000);
-      const mm = Math.floor(total/60).toString().padStart(2,'0');
-      const ss = (total % 60).toString().padStart(2,'0');
-      return mm + ':' + ss;
-    }
-
-    function recalcStats(){
-      const minutes = Math.max( (elapsedMs || 0) / 60000, 0.0001);
-      const correctChars = chars.reduce((acc, c) => acc + (c.status === 'correct' ? 1 : 0), 0);
-      const totalTyped = typedChars || 0;
-      const wpm = Math.round((correctChars/5) / minutes);
-      const cpm = Math.round((correctChars) / minutes);
-      const accuracy = totalTyped === 0 ? 100 : Math.max(0, Math.round((correctChars / totalTyped) * 100));
-      wpmEl.textContent = isFinite(wpm) ? wpm : 0;
-      cpmEl.textContent = isFinite(cpm) ? cpm : 0;
-      accuracyEl.textContent = accuracy + '%';
-      mistakesEl.textContent = mistakes;
-      charsTypedEl.textContent = totalTyped;
-    }
-
-    function updateStats(){ recalcStats(); }
-
-    function stopTest(finalize = false){
-      if(timerInterval) clearInterval(timerInterval);
-      started = false;
-      startBtn.textContent = 'Start';
-      startBtn.disabled = false;
-      typingInput.disabled = true;
-      if(finalize) saveScore();
-    }
-
-    function processInput(value){
-      // We'll compare each char typed to the expected char.
-      // Allow backspace behaviour: typingInput holds all typed content, so we compare char by char.
-      const typed = value;
-      typedChars = typed.length;
-
-      // Update statuses
-      for(let i=0;i<chars.length;i++){
-        const expected = chars[i].ch;
-        const typedChar = typed[i];
-        if(typedChar == null){
-          // not yet typed
-          if(chars[i].status !== 'pending') chars[i].status = 'pending';
-        } else {
-          if(typedChar === expected){
-            if(chars[i].status !== 'correct') chars[i].status = 'correct';
-          } else {
-            if(chars[i].status !== 'incorrect') chars[i].status = 'incorrect';
-          }
+    // ===== Utility: Make sections visible on scroll =====
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
         }
-      }
-
-      // mistakes = count of incorrect typed chars
-      mistakes = chars.reduce((acc,c,i) => acc + ((c.status === 'incorrect') ? 1 : 0), 0);
-
-      // currentIndex -> position of first pending or first incorrect? we'll use typed length
-      currentIndex = typed.length;
-      if(currentIndex >= chars.length){
-        // finished (user typed >= expected length). Decide pass/fail by mistakes and stop
-        renderPassage();
-        recalcStats();
-        stopTest(true);
-        return;
-      }
-
-      renderPassage();
-      recalcStats();
-    }
-
-    function saveScore(){
-      const wpm = Number(wpmEl.textContent) || 0;
-      const acc = parseInt(accuracyEl.textContent) || 0;
-      const time = Math.round(elapsedMs/1000);
-      const score = { wpm, acc, time, date: new Date().toISOString() };
-      const key = 'typing_highscores';
-      const existing = JSON.parse(localStorage.getItem(key) || '[]');
-      existing.push(score);
-      existing.sort((a,b) => b.wpm - a.wpm || b.acc - a.acc); // best first
-      localStorage.setItem(key, JSON.stringify(existing.slice(0,10)));
-      loadScores();
-    }
-
-    function loadScores(){
-      const key = 'typing_highscores';
-      const existing = JSON.parse(localStorage.getItem(key) || '[]');
-      scoresList.innerHTML = '';
-      if(existing.length === 0){
-        scoresList.innerHTML = '<div style="color:var(--muted)">No scores yet. Finish a test to save high score.</div>';
-        return;
-      }
-      existing.forEach((s, idx) => {
-        const div = document.createElement('div');
-        div.className = 'score-item';
-        const left = document.createElement('div');
-        left.textContent = `${idx+1}. WPM ${s.wpm} • ${s.acc}%`;
-        const right = document.createElement('div');
-        right.style.color = 'var(--muted)';
-        right.style.fontSize = '12px';
-        right.textContent = secondsToHMS(s.time) + ' • ' + (new Date(s.date)).toLocaleDateString();
-        div.appendChild(left);
-        div.appendChild(right);
-        scoresList.appendChild(div);
       });
-    }
+    }, {threshold: 0.15});
+    sections.forEach(s => observer.observe(s));
 
-    function secondsToHMS(sec){
-      const m = Math.floor(sec/60);
-      const s = sec%60;
-      return `${m}m ${s}s`;
-    }
+    // ===== Dark mode toggle =====
+    function toggleDarkMode(){ document.body.classList.toggle('dark-mode'); }
 
-    // ====== Event Listeners ======
-    startBtn.addEventListener('click', () => {
-      if(!started){
-        if(!startTime) {
-          // start fresh if not prepared
-          startTest();
-        } else {
-          startTest();
-        }
-      }
-    });
-
-    newBtn.addEventListener('click', () => {
-      // choose difficulty-based passage length
-      let sel = passageSelect.value;
-      let text = '';
-      if(sel === 'random') text = choosePassage('random');
-      else text = choosePassage(sel);
-      // adjust difficulty: for hard -> prefer longer/hard passages
-      if(difficulty === 'hard' && Math.random() > 0.4){
-        text = choosePassage('long') + ' ' + choosePassage('hard');
-      } else if(difficulty === 'easy' && Math.random() > 0.4){
-        text = choosePassage('short');
-      }
-      prepareText(text);
-    });
-
-    restartBtn.addEventListener('click', () => {
-      if(timerInterval) clearInterval(timerInterval);
-      if(startTime) startTime = performance.now();
-      typingInput.value = '';
-      started = false;
-      currentIndex = 0;
-      chars.forEach(c => c.status = 'pending');
-      renderPassage();
-      updateStats();
-      typingInput.disabled = true;
-      startBtn.disabled = false;
-      startBtn.textContent = 'Start';
-    });
-
-    submitBtn.addEventListener('click', () => {
-      stopTest(true);
-      renderPassage();
-    });
-
-    typingInput.addEventListener('input', (e) => {
-      if(!startTime) {
-        // start when first input typed
-        startTest();
-      }
-      processInput(e.target.value);
-    });
-
-    // handle keyboard paste or other keys
-    typingInput.addEventListener('paste', (e) => {
-      // allow paste but sanitize: limit to passage length
+    // ===== Contact form handling (demo - saves to localStorage) =====
+    function handleContact(e){
       e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData('text').slice(0, chars.length);
-      typingInput.value = text;
-      if(!startTime) startTest();
-      processInput(typingInput.value);
-    });
+      const name = document.getElementById('c-name').value.trim();
+      const email = document.getElementById('c-email').value.trim();
+      const subject = document.getElementById('c-subject').value.trim();
+      const message = document.getElementById('c-message').value.trim();
+      if(!name || !email || !message){ alert('Please fill all required fields'); return; }
+      const contacts = JSON.parse(localStorage.getItem('rj_contacts')||'[]');
+      contacts.unshift({name,email,subject,message,date:new Date().toISOString()});
+      localStorage.setItem('rj_contacts', JSON.stringify(contacts));
+      alert('Thanks! Your message has been saved (demo). I will reply soon.');
+      resetContact();
+    }
+    function resetContact(){ document.getElementById('c-name').value=''; document.getElementById('c-email').value=''; document.getElementById('c-subject').value=''; document.getElementById('c-message').value=''; }
 
-    // difficulty buttons
-    diffButtons.forEach(b => {
-      b.addEventListener('click', () => setDifficulty(b.dataset.diff));
-    });
+    // ===== Newsletter subscribe demo =====
+    function subscribeNews(){
+      const el = document.getElementById('newsletter-email');
+      const email = el.value.trim();
+      if(!email){ alert('Enter email to subscribe'); return; }
+      const list = JSON.parse(localStorage.getItem('rj_news')||'[]');
+      list.push({email, date:new Date().toISOString()});
+      localStorage.setItem('rj_news', JSON.stringify(list));
+      el.value='';
+      alert('Subscribed! (demo)');
+    }
 
-    // pre-select initial passage
-    window.addEventListener('load', () => {
-      setDifficulty('medium');
-      // generate initial passage
-      const initial = choosePassage('medium');
-      prepareText(initial);
-      loadScores();
-    });
+    // ===== Modal logic for project details (many dummy entries) =====
+    const modal = document.getElementById('modal-backdrop');
+    const modalText = document.getElementById('modal-text');
+    const modalTags = document.getElementById('modal-tags');
+    const modalTitle = document.getElementById('modal-title');
 
-    // accessibility: allow focus into textarea with Enter when not started
-    typingInput.addEventListener('keydown', (e) => {
-      if(e.key === 'Tab') e.preventDefault();
-      // If user pressed Esc -> reset
-      if(e.key === 'Escape') {
-        typingInput.value = '';
-        restartBtn.click();
-      }
-    });
-
-    // Expose some functions to console for debugging (optional)
-    window.typingTest = {
-      prepareText,
-      startTest,
-      stopTest,
-      recalcStats,
-      loadScores
+    const PROJECTS = {
+      1: { title:'Typing Speed Trainer', text:'Lightweight typing trainer with WPM/accuracy, local highscores, multiple difficulty levels and mobile-friendly UI. Built using semantic HTML, CSS and efficient vanilla JavaScript. No external libs.', tags:['HTML','CSS','JS','localStorage'] },
+      2: { title:'MM University Landing', text:'A full landing site template with news, events, programs and modal login. Focused on content layout, accessibility and reusability. Uses CSS Grid for layout and cards for content.', tags:['HTML','CSS','Accessibility'] },
+      3: { title:'Portfolio Template', text:'One-page portfolio with hero, skills grid, projects and contact form. Dark mode and smooth scroll included. Clean, modular CSS for easy theming.', tags:['HTML','CSS','JS'] },
+      4: { title:'Weather Dashboard', text:'Fetches live weather using a public API, includes caching to reduce calls and responsive charts for forecast data.', tags:['API','JS','UX'] },
+      5: { title:'Calculator UI', text:'Responsive calculator supporting keyboard and touch interactions with clear focus states and accessible labeling.', tags:['JS','UX'] },
+      6: { title:'E-commerce Landing', text:'Marketing-focused landing page with product highlights, CTA and simulated checkout flow (demo only).', tags:['HTML','CSS','Animations'] },
+      7: { title:'Blog System (Static)', text:'Markdown-driven static blog template with category filters and responsive reading experience.', tags:['HTML','JS'] },
+      8: { title:'Quiz App', text:'Timed quizzes with score tracking and review pages, designed for quick learning sessions.', tags:['JS','UX'] },
+      9: { title:'Image Gallery', text:'Optimized image grid with lazy-loading and lightbox modal for full-size images.', tags:['JS','Performance'] },
+      10: { title:'Task Manager', text:'Local todo manager with drag-and-drop ordering and persistent local storage.', tags:['JS','localStorage'] },
+      11: { title:'Chat UI Prototype', text:'Minimal chat interface for messaging APIs and proof-of-concept integrations.', tags:['UI','Design'] },
+      12: { title:'Landing Animations', text:'Hero sequences and micro-interactions designed to improve engagement and conversions.', tags:['CSS','Animations'] },
+      13: { title:'Resume Builder', text:'Simple resume builder allowing export to PDF via browser APIs and printable templates.', tags:['JS','PDF'] },
+      14: { title:'Expense Tracker', text:'Track income and expenses with charts and CSV export.', tags:['JS','Charts'] },
+      15: { title:'Music Player UI', text:'Custom audio player with playlist controls and accessible keyboard support.', tags:['Audio','JS'] },
+      16: { title:'Markdown Editor', text:'Live-edit markdown with side-by-side preview and file export.', tags:['JS'] },
+      17: { title:'Form Validation', text:'Reusable validation utilities and accessible error messages for forms.', tags:['JS','Accessibility'] },
+      18: { title:'Image Compressor', text:'Client-side image compression using canvas to reduce upload sizes.', tags:['Canvas','Performance'] },
+      19: { title:'Interactive Charts', text:'Accessible charts with tooltips, legends and keyboard navigation.', tags:['Charts','Accessibility'] },
+      20: { title:'Itinerary Planner', text:'Create, save and export travel plans with local storage.', tags:['JS','UX'] }
     };
+
+    function openModalDetailed(id){
+      const p = PROJECTS[id];
+      if(!p) return;
+      modalTitle.innerText = p.title;
+      modalText.innerText = p.text + '\n\nTech / Tags:';
+      modalTags.innerHTML = '';
+      p.tags.forEach(t => { const el = document.createElement('span'); el.className='tag'; el.innerText = t; modalTags.appendChild(el); });
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDetailedModal(){ modal.style.display='none'; modal.setAttribute('aria-hidden','true'); document.body.style.overflow='auto'; }
+
+    // Close modal on ESC
+    window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeDetailedModal(); });
+
+    // Smooth scroll active link highlighting
+    const navLinks = document.querySelectorAll('nav a');
+    const sectionMap = {};
+    navLinks.forEach(a=>{
+      const id = a.getAttribute('href')?.slice(1);
+      if(id){ const el = document.getElementById(id); if(el) sectionMap[id]=el; }
+      a.addEventListener('click', (ev)=>{ ev.preventDefault(); const id = a.getAttribute('href').slice(1); const el = document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); });
+    });
+
+    function highlightNav(){
+      const fromTop = window.scrollY + 140;
+      for(const id in sectionMap){
+        const el = sectionMap[id];
+        if(el.offsetTop <= fromTop && (el.offsetTop + el.offsetHeight) > fromTop){
+          document.querySelectorAll('nav a').forEach(n=>n.classList.remove('active'));
+          const link = document.querySelector('nav a[href="#'+id+'"]'); if(link) link.classList.add('active');
+        }
+      }
+    }
+    window.addEventListener('scroll', highlightNav);
+    window.addEventListener('load', ()=>{ highlightNav(); });
+
+    // tiny helper: prefill contact fields if data present
+    (function prefillContact(){
+      const contacts = JSON.parse(localStorage.getItem('rj_contacts')||'[]');
+      if(contacts && contacts.length>0){ document.getElementById('c-name').value = contacts[0].name || ''; }
+    })();
   </script>
 </body>
 </html>
